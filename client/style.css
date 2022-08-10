@@ -24,11 +24,15 @@ p {
   padding: 10px 25px;
   color: #fff;
   font-family: inherit;
-  margin: 20px 10px;
+  margin: 20px 10px 5px 10px;
   text-transform: uppercase;
   outline: none;
   transition: .2s;
   cursor: pointer;
+}
+
+.validation-error {
+  display: none
 }
 
 .btn:hover {
@@ -53,6 +57,10 @@ p {
 
 .welcome-form {
   display: none;
+}
+
+.welcome-form h2 {
+  margin: ;
 }
 
 .messages-section {
