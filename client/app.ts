@@ -6,7 +6,7 @@ import {
   minUsernameLength,
   recievedMessageClassname,
   selfMessageClassname,
-} from './constants';
+} from './constants.js';
 
 const welcomeForm = document.getElementById('welcome-form')!;
 const messageBox = document.getElementById('messages-section')!;
