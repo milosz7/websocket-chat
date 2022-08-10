@@ -6,6 +6,7 @@ import {
   minUsernameLength,
   recievedMessageClassname,
   selfMessageClassname,
+  API_URL
 } from './constants.js';
 
 const welcomeForm = document.getElementById('welcome-form')!;
@@ -33,7 +34,7 @@ const validateUsername = () => {
   return false;
 };
 
-const addMessage = (author: string, content: string) => {
+const addMessage = (author: string, message: string) => {
   const messageOriginClassname =
     author === userName ? selfMessageClassname : recievedMessageClassname;
   const messageListItem = document.createElement('li');
@@ -44,7 +45,7 @@ const addMessage = (author: string, content: string) => {
   messageAuthor.appendChild(document.createTextNode(userName === author ? 'You' : author));
 
   const messageContent = document.createElement('div');
-  messageContent.appendChild(document.createTextNode(content));
+  messageContent.appendChild(document.createTextNode(message));
   messageContent.classList.add(messageContentClassname);
 
   messageListItem.appendChild(messageAuthor);
@@ -53,6 +54,18 @@ const addMessage = (author: string, content: string) => {
   
   messageInput.value = '';
 };
+
+const sendMessage = async (author: string, message: string) => {
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({author, message})
+  }
+  const response = await fetch(API_URL, options)
+  console.log(response)
+} 
 
 welcomeForm.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -68,6 +81,7 @@ messageForm.addEventListener('submit', (e) => {
   const messageAuthor = userName;
   const messageContent = messageInput.value;
   if (messageContent) {
+    sendMessage(messageAuthor, messageContent)
     addMessage(messageAuthor, messageContent);
   }
 });
