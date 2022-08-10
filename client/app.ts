@@ -16,6 +16,7 @@ const messageForm = document.getElementById('add-messages-form')!;
 const messageInput = document.getElementById('message-content') as HTMLInputElement;
 const usernameInput = document.getElementById('username') as HTMLInputElement;
 const validationError = document.querySelector('.validation-error')!;
+const messageError = document.querySelector('.message-error')!;
 
 let userName = '';
 
@@ -65,7 +66,16 @@ const sendMessage = async (author: string, message: string) => {
   }
   const response = await fetch(API_URL, options)
   console.log(response)
-} 
+};
+
+const manageMessageError = (message: string) => {
+  if (!message) {
+    messageError.classList.add(displayClassname)
+  }
+  if (message && messageError.classList.contains(displayClassname)) {
+    messageError.classList.remove(displayClassname);
+  }
+}
 
 welcomeForm.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -80,6 +90,7 @@ messageForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const messageAuthor = userName;
   const messageContent = messageInput.value;
+  manageMessageError(messageContent)
   if (messageContent) {
     sendMessage(messageAuthor, messageContent)
     addMessage(messageAuthor, messageContent);

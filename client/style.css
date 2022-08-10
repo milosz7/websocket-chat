@@ -104,6 +104,10 @@ p {
   max-width: 200px;
 }
 
+.message-error {
+  display: none;
+}
+
 .message--self .message__content {
   background: #3498db;
 }
