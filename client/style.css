@@ -104,6 +104,10 @@ p {
   max-width: 200px;
 }
 
+.message__content--chatbot {
+  font-style: italic;
+}
+
 .message-error {
   display: none;
 }
