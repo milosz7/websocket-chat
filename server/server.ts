@@ -47,6 +47,8 @@ io.on('connection', (socket) => {
       socket.broadcast.emit('login/logout', ({ user, connected: false}))
     }
     const userToLogoutIdx = userData.findIndex((user) => user.id === socket.id);
-    userData.splice(userToLogoutIdx, 1);
+    if (userToLogoutIdx !== -1) {
+      userData.splice(userToLogoutIdx, 1);
+    }
   });
 });
