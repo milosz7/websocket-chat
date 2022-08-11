@@ -8,7 +8,7 @@
     "dev": "trap 'npm run postdev' INT ; npm-run-all -p dev:*",
     "dev:server": "nodemon server/server.ts",
     "dev:client": "tsc -w --project ./tsconfig-client.json",
-    "postdev": "lsof -i ${PORT:8000} -t | xargs kill ; rm ./client/*.js" 
+    "postdev": "lsof -i ${PORT:8000} -t | xargs kill ; rm ./client/*.js"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "express": "^4.18.1",
-    "npm-run-all": "^4.1.5"
+    "npm-run-all": "^4.1.5",
+    "socket.io": "^4.5.1"
   }
 }
