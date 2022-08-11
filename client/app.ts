@@ -32,6 +32,7 @@ const validateUsername = () => {
   const passedUsername = usernameInput.value;
   if (passedUsername.length >= minUsernameLength) {
     userName = passedUsername;
+    socket.emit('login', userName )
     if (validationError.classList.contains(displayClassname)) {
       validationError.classList.toggle(displayClassname);
     }
