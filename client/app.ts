@@ -7,7 +7,9 @@ import {
   minUsernameLength,
   recievedMessageClassname,
   selfMessageClassname,
-  API_URL,
+  chatbotMessageContentClassname,
+  chatbotJoinMessageCore,
+  chatbotLeaveMessageCore,
 } from './constants.js';
 
 const welcomeForm = document.getElementById('welcome-form')!;
@@ -20,6 +22,7 @@ const validationError = document.querySelector('.validation-error')!;
 const messageError = document.querySelector('.message-error')!;
 
 let userName = '';
+const chatbotName = "Chat Bot";
 
 const socket = io({
   autoConnect: true,
@@ -27,12 +30,13 @@ const socket = io({
 socket.on('message', ({ author, message }: { author: string; message: string }) =>
   addMessage(author, message)
 );
+socket.on('login/logout', ({ user, connected }) => chatbotMessages(user, connected));
 
 const validateUsername = () => {
   const passedUsername = usernameInput.value;
   if (passedUsername.length >= minUsernameLength) {
     userName = passedUsername;
-    socket.emit('login', userName )
+    socket.emit('login/logout', userName );
     if (validationError.classList.contains(displayClassname)) {
       validationError.classList.toggle(displayClassname);
     }
@@ -57,6 +61,9 @@ const addMessage = (author: string, message: string) => {
   const messageContent = document.createElement('div');
   messageContent.appendChild(document.createTextNode(message));
   messageContent.classList.add(messageContentClassname);
+  if (author === chatbotName) {
+    messageContent.classList.add(chatbotMessageContentClassname);
+  }
 
   messageListItem.appendChild(messageAuthor);
   messageListItem.appendChild(messageContent);
@@ -77,6 +84,19 @@ const manageMessageError = (message: string) => {
     messageError.classList.remove(displayClassname);
   }
 };
+
+const chatbotMessages = (user: string, connected: boolean) => {
+  const chatbotName = "Chat Bot";
+
+  if (connected) {
+    const chatbotMessage = `${user} ${chatbotJoinMessageCore}`;
+    addMessage(chatbotName, chatbotMessage);
+  }
+  if (!connected) {
+    const chatbotMessage = `${user} ${chatbotLeaveMessageCore}`;
+    addMessage(chatbotName, chatbotMessage)
+  }
+}
 
 welcomeForm.addEventListener('submit', (e) => {
   e.preventDefault();
