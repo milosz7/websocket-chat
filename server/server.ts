@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import { Server } from 'socket.io';
 
 interface messageData {
   author: string;
@@ -22,10 +23,19 @@ app.post('/api', (req, res, next) => {
   const { author, message } = messageData;
   if (author && message) {
     messages.push(messageData);
-    console.log(messages);
   }
 });
 
-app.listen(8000, () => {
-  console.log('listening on port 8000');
+const server = app.listen(8000, () => {
+  console.log('port 8000')
+})
+const io = new Server(server);  
+
+io.on('connection', (socket) => {
+  console.log('New client! Its id – ' + socket.id);
+  socket.on('message', (message: messageData) => {
+    messages.push(message);
+    socket.broadcast.emit("message", message);
+  });
+  socket.on('disconnect', () => { console.log('Oh, socket ' + socket.id + ' has left') });
 });

@@ -1,3 +1,4 @@
+declare const io: any;
 import {
   displayClassname,
   messageAuthorClassname,
@@ -6,7 +7,7 @@ import {
   minUsernameLength,
   recievedMessageClassname,
   selfMessageClassname,
-  API_URL
+  API_URL,
 } from './constants.js';
 
 const welcomeForm = document.getElementById('welcome-form')!;
@@ -19,6 +20,13 @@ const validationError = document.querySelector('.validation-error')!;
 const messageError = document.querySelector('.message-error')!;
 
 let userName = '';
+
+const socket = io({
+  autoConnect: true,
+});
+socket.on('message', ({ author, message }: { author: string; message: string }) =>
+  addMessage(author, message)
+);
 
 const validateUsername = () => {
   const passedUsername = usernameInput.value;
@@ -52,30 +60,22 @@ const addMessage = (author: string, message: string) => {
   messageListItem.appendChild(messageAuthor);
   messageListItem.appendChild(messageContent);
   messageList.appendChild(messageListItem);
-  
+
   messageInput.value = '';
 };
 
-const sendMessage = async (author: string, message: string) => {
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({author, message})
-  }
-  const response = await fetch(API_URL, options)
-  console.log(response)
+const sendMessage = (author: string, message: string) => {
+  socket.emit('message', { author, message });
 };
 
 const manageMessageError = (message: string) => {
   if (!message) {
-    messageError.classList.add(displayClassname)
+    messageError.classList.add(displayClassname);
   }
   if (message && messageError.classList.contains(displayClassname)) {
     messageError.classList.remove(displayClassname);
   }
-}
+};
 
 welcomeForm.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -90,9 +90,9 @@ messageForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const messageAuthor = userName;
   const messageContent = messageInput.value;
-  manageMessageError(messageContent)
+  manageMessageError(messageContent);
   if (messageContent) {
-    sendMessage(messageAuthor, messageContent)
+    sendMessage(messageAuthor, messageContent);
     addMessage(messageAuthor, messageContent);
   }
 });
